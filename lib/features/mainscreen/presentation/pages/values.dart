@@ -4,10 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:netguru_value_generator/features/mainscreen/data/datasource/quote_dao.dart';
+import 'package:netguru_value_generator/features/mainscreen/data/models/quotes.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/widget/home_page_controller.dart';
 
-import '../../core/widget/text_widget.dart';
-import 'home.dart';
-import 'model/quotes.dart';
+import '../../../../core/widget/text_widget.dart';
 
 class Values extends StatefulWidget{
   const Values({Key? key, this.controller}) : super(key: key);
@@ -18,19 +19,16 @@ class Values extends StatefulWidget{
 }
 
 class _ValuesState extends State<Values> {
-  late final Box box;
 
   int _pos = 0;
   late Timer _timer;
 
 
-
   @override
   void initState() {
-    box = Hive.box('quoteBox');
     _timer = Timer.periodic(const Duration(seconds: 5), (Timer t) {
       setState(() {
-        _pos = (_pos + 1) % box.length;
+        _pos = (_pos + 1) % quoteDao.box.length;
       });
     });
     widget.controller!.methodA = methodA;
@@ -56,7 +54,7 @@ class _ValuesState extends State<Values> {
       alignment: Alignment.center,
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: ValueListenableBuilder(
-        valueListenable: box.listenable(),
+        valueListenable: quoteDao.getListenable(),
           builder: (context, Box box, widget) {
           if (box.isEmpty) {
             return Center(
@@ -88,9 +86,9 @@ class _ValuesState extends State<Values> {
 
   methodA() {
     Quotes updateQuotes = Quotes(
-      quotes: box.getAt(_pos).quotes,
+      quotes: quoteDao.box.getAt(_pos).quotes,
       fav: true,
     );
-    box.put(_pos, updateQuotes);
+    quoteDao.box.put(_pos, updateQuotes);
   }
 }

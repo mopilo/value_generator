@@ -2,18 +2,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hive/hive.dart';
 import 'package:netguru_value_generator/core/settings/app_themes.dart';
 import 'package:netguru_value_generator/core/settings/preferences.dart';
-import 'package:netguru_value_generator/features/themeboc/theme_bloc.dart';
-import 'package:netguru_value_generator/features/themeboc/theme_events.dart';
-import 'package:netguru_value_generator/features/themeboc/theme_state.dart';
+import 'package:netguru_value_generator/features/mainscreen/data/datasource/quote_dao.dart';
+import 'package:netguru_value_generator/features/mainscreen/data/models/quotes.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/widget/home_page_controller.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/bloc/themeboc/theme_bloc.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/bloc/themeboc/theme_events.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/bloc/themeboc/theme_state.dart';
 
-import '../../core/utils/const.dart';
-import '../../core/utils/themes.dart';
-import '../../core/widget/text_widget.dart';
+import '../../../../core/utils/themes.dart';
+import '../../../../core/widget/text_widget.dart';
 import 'favorite.dart';
-import 'model/quotes.dart';
 import 'values.dart';
 
 class Home extends StatefulWidget{
@@ -25,7 +25,7 @@ class Home extends StatefulWidget{
 
 class _HomeState extends State<Home> {
 
-  late final Box box;
+  // late final Box box;
   late final HomePageController myController;
 
   //to handle which item is currently selected in the bottom app bar
@@ -39,17 +39,13 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    box = Hive.box('quoteBox');
+    // box = Hive.box('quoteBox');
     myController = HomePageController();
-    checker();
+    onLoad();
   }
 
-  checker(){
-    if(box.length == 0){
-      for(String quote in quotes){
-        box.add(Quotes(quotes: quote, fav: false));
-      }
-    }
+  onLoad() async{
+    await quoteDao.addQuotesOnLoad();
   }
 
   //create
@@ -58,8 +54,7 @@ class _HomeState extends State<Home> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    currentScreen =   Values(controller: myController);
-
+    currentScreen = Values(controller: myController);
   }
 
 
@@ -87,7 +82,7 @@ class _HomeState extends State<Home> {
         listener: (BuildContext context, state) {
          setState(() {});
         },
-        builder: (BuildContext context, state) =>
+          builder: (BuildContext context, state) =>
             Scaffold(
               appBar: AppBar(
                 backgroundColor: AppColors.primary,
@@ -106,9 +101,10 @@ class _HomeState extends State<Home> {
                       icon: const Icon(
                         Icons.favorite,
                         color: Colors.white,
-                      ), onPressed: () {
-                      myController.methodA();
-                    },
+                      ),
+                      onPressed: () {
+                        myController.methodA();
+                      },
                     ),
                   ),
                   Switch(
@@ -173,17 +169,18 @@ class _HomeState extends State<Home> {
                                       color: AppColors.primary
                                   )
                               ),
-                              onPressed: () {
+                              onPressed: () async{
                                 if (controller.text.isNotEmpty) {
                                   Quotes newQuotes = Quotes(
                                     quotes: controller.text,
                                     fav: false,
                                   );
-                                  box.add(newQuotes);
+                                  await quoteDao.addQuotes(newQuotes);
                                   Navigator.of(context).pop();
                                 }
                               },
                             ),
+
                           ],
                         );
                       }
@@ -276,6 +273,4 @@ class _HomeState extends State<Home> {
   }
 }
 
-class HomePageController {
-  late Function() methodA;
-}
+

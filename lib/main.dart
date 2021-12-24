@@ -3,12 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:netguru_value_generator/features/mainscreen/model/quotes.dart';
 import 'package:netguru_value_generator/features/splash/splash_screen.dart';
 
 import 'core/settings/preferences.dart';
-import 'features/themeboc/theme_bloc.dart';
-import 'features/themeboc/theme_state.dart';
+import 'core/utils/hive_manager.dart';
+import 'features/mainscreen/data/models/quotes.dart';
+import 'features/mainscreen/presentation/bloc/themeboc/theme_bloc.dart';
+import 'features/mainscreen/presentation/bloc/themeboc/theme_state.dart';
 
 
 void main() async{
@@ -20,7 +21,7 @@ void main() async{
   ]);
   await Hive.initFlutter();
   Hive.registerAdapter(QuotesAdapter());
-  await Hive.openBox('quoteBox');
+  await initialize();
   await Preferences.init();
 
   runApp(const MyApp());

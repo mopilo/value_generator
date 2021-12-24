@@ -1,6 +1,4 @@
 
-
-
 List<String> quotes = [
   "Exceed clients' and colleagues' expectations",
   "Take ownership and question the status quo in a constructive manner",

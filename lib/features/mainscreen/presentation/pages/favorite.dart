@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:netguru_value_generator/core/widget/text_widget.dart';
+import 'package:netguru_value_generator/features/mainscreen/data/datasource/quote_dao.dart';
 
 class Favorite extends StatefulWidget{
   const Favorite({Key? key}) : super(key: key);
@@ -12,19 +13,13 @@ class Favorite extends StatefulWidget{
 
 class _FavoriteState extends State<Favorite> {
 
-  late final Box box;
 
-  @override
-  void initState() {
-    super.initState();
-    box = Hive.box('quoteBox');
-  }
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder(
-        valueListenable: box.listenable(),
-        builder: (context, Box box, widget) {
+        valueListenable: quoteDao.getListenable(),
+        builder: (_, Box box, r) {
           var myFavorites = box.values.where((e) => e.fav == true).toList();
 
           if (myFavorites.isEmpty) {

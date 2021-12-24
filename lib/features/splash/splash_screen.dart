@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:netguru_value_generator/features/mainscreen/home.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/pages/home.dart';
 import 'package:netguru_value_generator/core/settings/preferences.dart';
-import 'package:netguru_value_generator/features/themeboc/theme_bloc.dart';
-import 'package:netguru_value_generator/features/themeboc/theme_events.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/bloc/themeboc/theme_bloc.dart';
+import 'package:netguru_value_generator/features/mainscreen/presentation/bloc/themeboc/theme_events.dart';
 
 import 'splash_bloc.dart';
 
